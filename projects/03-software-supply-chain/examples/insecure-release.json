@@ -1,0 +1,7 @@
+{
+  "artifact": {"name": "latest.tar.gz", "sha256": "unknown"},
+  "signature": {"verified": false},
+  "sbom": {"format": "custom", "packages": [{"name": "library", "version": "", "sha256": ""}]},
+  "provenance": {"source_uri": "unknown", "commit_sha": "main", "identity_type": "static-key"},
+  "vulnerabilities": {"critical": 1, "high": 2}
+}

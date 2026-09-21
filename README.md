@@ -10,9 +10,9 @@ These labs are intentionally mapped to recurring requirements across Cloud Secur
 | --- | --- | --- | --- |
 | 1 | [Secure multi-cloud landing zone](projects/01-multicloud-landing-zone/README.md) | Terraform, workload identity, policy as code, network controls | In progress |
 | 2 | [Kubernetes security baseline](projects/02-kubernetes-security-baseline/README.md) | Kubernetes, admission policy, workload identity, runtime boundaries | In progress |
-| 3 | [Software supply-chain security](projects/03-software-supply-chain/README.md) | SAST, SCA, SBOM, signing, provenance, CI/CD security | Planned |
+| 3 | [Software supply-chain security](projects/03-software-supply-chain/README.md) | SAST, SCA, SBOM, signing, provenance, CI/CD security | In progress |
 | 4 | [AI ingestion and agentic security lab](projects/04-agentic-ai-security/README.md) | Safe ingestion, prompt injection, provenance, guardrails, evals | In progress |
-| 5 | [Detection as code](projects/05-detection-as-code/README.md) | Cloud attack simulation, detections, runbooks, incident review | Planned |
+| 5 | [Detection as code](projects/05-detection-as-code/README.md) | Cloud attack simulation, detections, runbooks, incident review | In progress |
 
 ## Evidence standard
 
