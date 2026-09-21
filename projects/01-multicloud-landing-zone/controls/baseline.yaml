@@ -1,0 +1,26 @@
+version: 1
+controls:
+  - id: IAM-001
+    requirement: CI uses short-lived OIDC federation and stores no cloud access keys.
+    evidence: provider trust policy and successful CI identity test
+  - id: IAM-002
+    requirement: Deployment roles are scoped by repository, branch or environment, and audience.
+    evidence: trust-policy tests
+  - id: DATA-001
+    requirement: Storage services deny anonymous public access.
+    evidence: Terraform plan policy test
+  - id: DATA-002
+    requirement: Data is encrypted at rest and requires TLS in transit.
+    evidence: Terraform plan policy test
+  - id: LOG-001
+    requirement: Administrative and data-access events flow to centralized immutable logging.
+    evidence: logging configuration and retention test
+  - id: NET-001
+    requirement: Workloads use explicit ingress and egress paths with default-deny boundaries.
+    evidence: network policy test
+  - id: GOV-001
+    requirement: Resources declare owner, environment, data classification, and cost-center metadata.
+    evidence: metadata policy test
+  - id: GOV-002
+    requirement: Every exception has an owner, rationale, approval, and expiration date.
+    evidence: exception-schema test
