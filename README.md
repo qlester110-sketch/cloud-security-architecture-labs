@@ -9,7 +9,7 @@ These labs are intentionally mapped to recurring requirements across Cloud Secur
 | Priority | Project | Capability demonstrated | Status |
 | --- | --- | --- | --- |
 | 1 | [Secure multi-cloud landing zone](projects/01-multicloud-landing-zone/README.md) | Terraform, workload identity, policy as code, network controls | In progress |
-| 2 | [Kubernetes security baseline](projects/02-kubernetes-security-baseline/README.md) | Kubernetes, admission policy, workload identity, runtime boundaries | Planned |
+| 2 | [Kubernetes security baseline](projects/02-kubernetes-security-baseline/README.md) | Kubernetes, admission policy, workload identity, runtime boundaries | In progress |
 | 3 | [Software supply-chain security](projects/03-software-supply-chain/README.md) | SAST, SCA, SBOM, signing, provenance, CI/CD security | Planned |
 | 4 | [Agentic AI security lab](projects/04-agentic-ai-security/README.md) | Prompt injection, tool abuse, guardrails, evals, findings | Planned |
 | 5 | [Detection as code](projects/05-detection-as-code/README.md) | Cloud attack simulation, detections, runbooks, incident review | Planned |

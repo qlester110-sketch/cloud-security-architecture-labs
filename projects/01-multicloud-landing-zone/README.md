@@ -1,6 +1,6 @@
 # Secure Multi Cloud Landing Zone
 
-**Status:** In progress — architecture and control specification complete; Terraform modules are next.
+**Status:** In progress — architecture, control specification, and tested AWS OIDC trust-policy generator complete; Terraform modules are next.
 
 ## Goal
 
@@ -63,3 +63,13 @@ The machine-readable baseline lives in [`controls/baseline.yaml`](controls/basel
 - [Architecture decision record](docs/ADR-001-identity-and-boundaries.md)
 - [Threat model](docs/THREAT-MODEL.md)
 - [Baseline control contract](controls/baseline.yaml)
+- [OIDC trust configuration](config/oidc-trust.json)
+- [AWS trust-policy generator](tools/generate_aws_trust_policy.py)
+
+Run the generator and tests without cloud credentials:
+
+```bash
+python projects/01-multicloud-landing-zone/tools/generate_aws_trust_policy.py \
+  projects/01-multicloud-landing-zone/config/oidc-trust.json
+python -m unittest tests.test_oidc_trust_policy -v
+```

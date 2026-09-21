@@ -1,0 +1,16 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {"name": "unsafe-api", "namespace": "portfolio"},
+  "spec": {
+    "template": {
+      "spec": {
+        "containers": [{
+          "name": "api",
+          "image": "nginx:latest",
+          "securityContext": {"privileged": true}
+        }]
+      }
+    }
+  }
+}

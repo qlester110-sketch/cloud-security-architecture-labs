@@ -1,0 +1,7 @@
+{
+  "github_org": "qlester110-sketch",
+  "repository": "cloud-security-architecture-labs",
+  "environment": "production",
+  "audience": "sts.amazonaws.com",
+  "role_name": "portfolio-production-deployer"
+}
