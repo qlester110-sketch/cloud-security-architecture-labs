@@ -11,7 +11,7 @@ These labs are intentionally mapped to recurring requirements across Cloud Secur
 | 1 | [Secure multi-cloud landing zone](projects/01-multicloud-landing-zone/README.md) | Terraform, workload identity, policy as code, network controls | In progress |
 | 2 | [Kubernetes security baseline](projects/02-kubernetes-security-baseline/README.md) | Kubernetes, admission policy, workload identity, runtime boundaries | In progress |
 | 3 | [Software supply-chain security](projects/03-software-supply-chain/README.md) | SAST, SCA, SBOM, signing, provenance, CI/CD security | Planned |
-| 4 | [Agentic AI security lab](projects/04-agentic-ai-security/README.md) | Prompt injection, tool abuse, guardrails, evals, findings | Planned |
+| 4 | [AI ingestion and agentic security lab](projects/04-agentic-ai-security/README.md) | Safe ingestion, prompt injection, provenance, guardrails, evals | In progress |
 | 5 | [Detection as code](projects/05-detection-as-code/README.md) | Cloud attack simulation, detections, runbooks, incident review | Planned |
 
 ## Evidence standard
@@ -32,6 +32,10 @@ Every completed lab must include:
 - Examples use synthetic identifiers and isolated sandbox accounts or local tooling.
 - Cloud resources default to least privilege and must include teardown instructions.
 - Destructive or billable operations require an explicit opt-in variable.
+
+## Public portfolio boundary
+
+This repository demonstrates reusable engineering patterns, not private business advantage. Public examples use synthetic data and generic workflows. Product research, suppliers, margins, advertising performance, customer information, internal prompts, credentials, and daily operating procedures remain outside this repository.
 
 ## Target role alignment
 

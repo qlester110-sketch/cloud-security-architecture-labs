@@ -1,0 +1,5 @@
+{
+  "source_type": "document",
+  "source_id": "synthetic://architecture-note-001",
+  "content": "The service uses short-lived workload identity and denies anonymous access."
+}
