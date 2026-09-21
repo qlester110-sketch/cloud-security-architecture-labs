@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive cloud and Kubernetes security portfolio by Quentin Lester.">
+  <title>Quentin Lester | Security Architecture Labs</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="eyebrow">QUENTIN LESTER · SECURITY ARCHITECTURE</div>
+    <h1>Controls should be testable,<br>not just documented.</h1>
+    <p class="lede">A public portfolio of cloud, platform, identity, DevSecOps, and AI security engineering—with runnable evidence.</p>
+    <div class="actions">
+      <a class="primary" href="#checker">Try the Kubernetes checker</a>
+      <a href="https://github.com/qlester110-sketch/cloud-security-architecture-labs">View source on GitHub</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="proof" aria-label="Portfolio proof">
+      <article><strong>8</strong><span>automated tests</span></article>
+      <article><strong>2</strong><span>working projects</span></article>
+      <article><strong>0</strong><span>cloud keys required</span></article>
+    </section>
+
+    <section>
+      <div class="section-label">WHAT IS WORKING</div>
+      <div class="cards">
+        <article class="card">
+          <div class="number">01</div>
+          <h2>Federated CI identity</h2>
+          <p>Generates an AWS trust policy restricted to the exact GitHub repository, protected environment, OIDC audience, and subject.</p>
+          <ul><li>No static cloud credentials</li><li>No wildcard trust</li><li>Fail-closed configuration</li></ul>
+        </article>
+        <article class="card">
+          <div class="number">02</div>
+          <h2>Kubernetes baseline</h2>
+          <p>Evaluates workloads for non-root execution, seccomp, immutable images, resource boundaries, and least privilege.</p>
+          <ul><li>Eight enforceable controls</li><li>Secure and insecure fixtures</li><li>Default-deny networking</li></ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="checker" class="checker">
+      <div class="section-label">INTERACTIVE DEMO</div>
+      <h2>Kubernetes workload security checker</h2>
+      <p>Paste a Deployment as JSON. Analysis runs entirely in your browser.</p>
+      <div class="toolbar">
+        <button id="secureExample">Load secure example</button>
+        <button id="insecureExample">Load insecure example</button>
+        <button id="analyze" class="primary-button">Analyze workload</button>
+      </div>
+      <textarea id="manifest" spellcheck="false" aria-label="Kubernetes JSON manifest"></textarea>
+      <div id="results" class="results" aria-live="polite">Choose an example or paste a manifest to begin.</div>
+    </section>
+
+    <section>
+      <div class="section-label">DELIVERY ROADMAP</div>
+      <ol class="roadmap">
+        <li class="active"><span>In progress</span>Multi-cloud landing zone</li>
+        <li class="active"><span>In progress</span>Kubernetes security baseline</li>
+        <li><span>Next</span>Software supply-chain security</li>
+        <li><span>Planned</span>Agentic AI security lab</li>
+        <li><span>Planned</span>Detection as code</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>Built as reproducible public evidence. No proprietary systems or data.</footer>
+  <script src="app.js"></script>
+</body>
+</html>
