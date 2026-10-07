@@ -4,6 +4,8 @@ Local audit of this repository before it is shown to recruiters. Nothing in this
 
 **Status of the code:** not marked polished. The Python tools were generated with AI assistance. They stay "in progress" until Quentin has read each tool, can explain every rule, and has reviewed the open code findings below.
 
+**Follow-up on 5 Oct 2026:** findings 4 through 8 below were repaired locally and covered by nine new tests. The suite now contains 34 passing tests. The projects remain in progress until Quentin completes the personal review gate.
+
 ## How this was verified
 
 1. Fresh `git clone` of local `main` (commit `e3bd254`) into a temporary directory.
@@ -102,6 +104,9 @@ Fixed after the initial audit:
 - SC-008 now requires the approved portfolio repository instead of accepting any GitHub URL.
 - Three new supply-chain tests cover missing evidence, malformed counts, and an unapproved repository.
 - The browser checker now creates result nodes with `textContent`; it no longer inserts findings through `innerHTML`.
+- Project 02 now checks init containers, privileged mode, host namespaces and host-path volumes, and correctly distinguishes a registry port from an image tag. The browser demo mirrors the new rules.
+- Project 04 no longer quarantines the standalone word `reveal`, catches a small set of spaced-out injection phrases, and redacts AWS access-key IDs.
+- Project 05 now alerts on root console activity, distinguishes failed console authentication, and detects public SSH exposure through port ranges and IPv6.
 
 ## Changes made on the local branch
 

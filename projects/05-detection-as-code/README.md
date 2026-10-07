@@ -1,6 +1,6 @@
 # Detection As Code
 
-**Status:** In progress. Five AWS CloudTrail detections, a synthetic event file, six tests, and a triage runbook are working. Attack simulation in a real account and time-to-detect measurement are not built yet.
+**Status:** In progress. Five AWS CloudTrail detections, a synthetic event file, nine tests, and a triage runbook are working. Attack simulation in a real account and time-to-detect measurement are not built yet.
 
 ## Goal
 
@@ -20,7 +20,7 @@ Adds detection-engineering, security incident command, and measurable response e
 
 ## Implemented detections
 
-- Root-account API activity.
+- Root-account activity, including console authentication.
 - Console authentication without MFA.
 - CloudTrail logging stopped or deleted.
 - IAM privilege-policy changes.
@@ -58,7 +58,6 @@ The other two are `AWS-IAM-002` (console login without MFA) and `AWS-NET-001` (S
 ## Known limitations
 
 - Rules match single events. There is no correlation across events or time windows.
-- A root-account console login does not alert. The root rule excludes `ConsoleLogin`, and the MFA rule only fires when MFA was not used.
-- AWS-IAM-002 does not check whether the login succeeded, so a failed login without MFA is labelled "succeeded".
-- AWS-NET-001 only matches `fromPort` exactly 22 on `0.0.0.0/0`. A port range that includes 22, such as 0 to 65535, and IPv6 `::/0` are missed.
+- Console authentication success is inferred from `responseElements.ConsoleLogin` and `errorMessage`. Unusual event shapes may need normalization before evaluation.
+- AWS-NET-001 supports direct parameters and the common nested `ipPermissions` event shape, including port ranges and IPv6. Other event-source variations may need normalization.
 - The events are hand-written synthetic samples, not exported from a live trail.

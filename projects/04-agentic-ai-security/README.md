@@ -91,7 +91,7 @@ Captured from a clean clone on 5 Oct 2026. The injection fixture is quarantined 
     "injection_indicators": [
       "ignore (all |any )?(previous|prior) instructions",
       "system prompt",
-      "reveal|exfiltrate|send.*secret"
+      "(?:reveal|exfiltrate|send).{0,40}(?:system prompt|developer message|credentials?|secrets?)"
     ]
   },
   "provenance": {
@@ -110,9 +110,9 @@ The safe fixture returns `"decision": "allow"` with exit code 0.
 
 This is a learning implementation, not a replacement for enterprise DLP, malware scanning, or a production content-disarm pipeline.
 
-- Injection detection is six regular expressions. It is easy to evade with spacing, synonyms, other languages, or encoding. For example, `I g n o r e previous instructions` is allowed.
-- The patterns also produce false positives. The single word `reveal` triggers quarantine, so a sentence like "the report will reveal trends" is quarantined.
-- Redaction covers email addresses, North American phone formats, and tokens that start with `sk-`, `sk_`, `api-` or `api_`. Cloud access keys such as AWS `AKIA...` keys, private keys, and national ID numbers are not detected.
+- Injection detection uses regular expressions plus compact-text matching for a small set of spaced-out attacks. Synonyms, other languages and encoded instructions can still evade it.
+- Patterns can still produce false positives because intent is inferred from phrases rather than understood semantically. Tests now cover a benign use of the word `reveal`.
+- Redaction covers email addresses, North American phone formats, common API-token prefixes and AWS access-key IDs. Private keys, secret access keys and national ID numbers are not detected.
 - Content is checked as plain text. HTML, PDF, images, and hidden text are not parsed.
 - There is no agent or tool layer yet, so excessive agency, unsafe tool use, and authorization boundaries are described above but not yet tested.
 

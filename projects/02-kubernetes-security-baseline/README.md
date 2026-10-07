@@ -1,6 +1,6 @@
 # Kubernetes Security Baseline
 
-**Status:** In progress. An offline workload checker with eight hardening controls, a default-deny NetworkPolicy, secure and insecure fixtures, automated tests, and a browser demo are working. Native admission policy and cluster-based tests are not built yet.
+**Status:** In progress. An offline workload checker with thirteen hardening controls, a default-deny NetworkPolicy, secure and insecure fixtures, automated tests, and a browser demo are working. Native admission policy and cluster-based tests are not built yet.
 
 **Try it in the browser:** [live checker](https://qlester110-sketch.github.io/cloud-security-architecture-labs/). The analysis runs entirely client-side.
 
@@ -34,6 +34,11 @@ flowchart LR
 | K8S-007 | Root filesystem is read-only |
 | K8S-008 | All Linux capabilities are dropped |
 | K8S-009 | CPU and memory requests and limits are declared |
+| K8S-010 | Workload does not use the host network namespace |
+| K8S-011 | Workload does not use the host PID namespace |
+| K8S-012 | Workload does not use the host IPC namespace |
+| K8S-013 | Workload does not mount a host path |
+| K8S-014 | Containers do not run in privileged mode |
 
 `manifests/default-deny-network-policy.yaml` denies all ingress and egress in the namespace until a more specific policy allows it.
 
@@ -68,21 +73,22 @@ K8S-006 api must disable privilege escalation
 K8S-007 api must use a read-only root filesystem
 K8S-008 api must drop all Linux capabilities
 K8S-009 api must declare resource requests and limits
+K8S-014 api must not run as privileged
 ```
 
 ## Known limitations
 
 - It is a static checker, not an admission controller. Nothing stops a non-compliant workload from being deployed.
-- Only `containers` are checked. `initContainers` and ephemeral containers are not.
-- `privileged: true`, `hostNetwork`, `hostPID`, `hostPath` volumes, and RBAC are not checked yet. The insecure fixture sets `privileged: true`, and it is caught here only because the other controls fail.
-- K8S-005 requires a tag, not an immutable digest. A tag such as `1.27.4-alpine` can still be re-pushed. An untagged image from a registry with a port, such as `registry.local:5000/app`, is wrongly accepted because the check looks for any colon.
+- Containers and init containers are checked. Ephemeral containers are not.
+- Host namespaces, host path volumes and privileged mode are checked. RBAC is not.
+- K8S-005 accepts a non-latest tag or digest. A tag such as `1.27.4-alpine` can still be re-pushed, so only a digest is immutable.
 - Input must be JSON. YAML manifests need converting first.
 - The default-deny NetworkPolicy is checked as text in a test, not applied to a running cluster.
 
 ## Planned next
 
 - Native `ValidatingAdmissionPolicy` resources carrying the same rules, tested against a local kind cluster.
-- Checks for privileged mode, host namespaces, `hostPath`, and init containers.
+- Ephemeral-container and RBAC checks.
 - Digest-pinned images and signature verification at admission.
 - RBAC review, controlled egress, and a controlled failure exercise.
 

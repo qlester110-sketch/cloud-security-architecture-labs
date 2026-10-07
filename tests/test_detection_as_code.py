@@ -38,6 +38,27 @@ class DetectionTests(unittest.TestCase):
         alerts = MODULE.detect(self.event("AuthorizeSecurityGroupIngress", requestParameters={"cidrIp": "0.0.0.0/0", "fromPort": 22}))
         self.assertEqual(alerts[0]["rule_id"], "AWS-NET-001")
 
+    def test_root_console_login_is_critical(self):
+        alerts = MODULE.detect(self.event("ConsoleLogin", userIdentity={"type": "Root", "principalId": "root"}, responseElements={"ConsoleLogin": "Success"}, additionalEventData={"MFAUsed": "Yes"}))
+        self.assertEqual({alert["rule_id"] for alert in alerts}, {"AWS-IAM-001"})
+
+    def test_failed_console_login_is_not_labelled_successful(self):
+        alerts = MODULE.detect(self.event("ConsoleLogin", responseElements={"ConsoleLogin": "Failure"}, additionalEventData={"MFAUsed": "No"}))
+        self.assertNotIn("AWS-IAM-002", {alert["rule_id"] for alert in alerts})
+
+    def test_public_ssh_port_range_and_ipv6_are_detected(self):
+        request = {
+            "ipPermissions": {
+                "items": [{
+                    "fromPort": 20,
+                    "toPort": 25,
+                    "ipv6Ranges": {"items": [{"cidrIpv6": "::/0"}]},
+                }]
+            }
+        }
+        alerts = MODULE.detect(self.event("AuthorizeSecurityGroupIngress", requestParameters=request))
+        self.assertEqual({alert["rule_id"] for alert in alerts}, {"AWS-NET-001"})
+
 
 if __name__ == "__main__":
     unittest.main()

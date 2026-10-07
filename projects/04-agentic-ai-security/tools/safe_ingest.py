@@ -16,7 +16,7 @@ INJECTION_PATTERNS = [
     re.compile(r"ignore (all |any )?(previous|prior) instructions", re.I),
     re.compile(r"system prompt", re.I),
     re.compile(r"developer message", re.I),
-    re.compile(r"reveal|exfiltrate|send.*secret", re.I),
+    re.compile(r"(?:reveal|exfiltrate|send).{0,40}(?:system prompt|developer message|credentials?|secrets?)", re.I),
     re.compile(r"do not tell (the )?user", re.I),
     re.compile(r"override (the )?(policy|rules|instructions)", re.I),
 ]
@@ -24,6 +24,15 @@ SENSITIVE_PATTERNS = {
     "email": re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.I),
     "phone": re.compile(r"(?<!\d)(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}(?!\d)"),
     "api_key": re.compile(r"\b(?:sk|api)[-_][A-Za-z0-9_-]{16,}\b", re.I),
+    "aws_access_key": re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
+}
+
+COMPACT_INJECTION_INDICATORS = {
+    "ignorepreviousinstructions": "obfuscated ignore previous instructions",
+    "ignorepriorinstructions": "obfuscated ignore prior instructions",
+    "revealthe systemprompt": "obfuscated reveal system prompt",
+    "revealsystemprompt": "obfuscated reveal system prompt",
+    "donottelltheuser": "obfuscated do not tell the user",
 }
 
 
@@ -37,7 +46,13 @@ def redact(text: str) -> tuple[str, list[str]]:
 
 
 def injection_indicators(text: str) -> list[str]:
-    return [pattern.pattern for pattern in INJECTION_PATTERNS if pattern.search(text)]
+    indicators = [pattern.pattern for pattern in INJECTION_PATTERNS if pattern.search(text)]
+    compact = re.sub(r"[^a-z0-9]", "", text.lower())
+    for phrase, label in COMPACT_INJECTION_INDICATORS.items():
+        normalized_phrase = re.sub(r"[^a-z0-9]", "", phrase)
+        if normalized_phrase in compact and label not in indicators:
+            indicators.append(label)
+    return indicators
 
 
 def ingest(record: dict, now: str | None = None) -> dict:

@@ -23,7 +23,7 @@ cd cloud-security-architecture-labs
 python3 -m unittest discover -s tests -v
 ```
 
-Expected result: `Ran 22 tests` followed by `OK`. The same command runs in GitHub Actions on every push and pull request.
+Expected result: `Ran 34 tests` followed by `OK`. The same command runs in GitHub Actions on every push and pull request.
 
 Each project README has its own run commands, sample output, and known limitations.
 
@@ -32,10 +32,10 @@ Each project README has its own run commands, sample output, and known limitatio
 | # | Project | What runs today | Planned next | Tests |
 | --- | --- | --- | --- | --- |
 | 1 | [Secure multi-cloud landing zone](projects/01-multicloud-landing-zone/README.md) | AWS trust-policy generator for GitHub Actions OIDC, ADR, threat model, control contract | Terraform modules for AWS, Azure, GCP | 5 |
-| 2 | [Kubernetes security baseline](projects/02-kubernetes-security-baseline/README.md) | Offline workload checker (8 controls), default-deny NetworkPolicy, browser demo | Native admission policy and kind cluster tests | 3 |
-| 3 | [Software supply-chain security](projects/03-software-supply-chain/README.md) | Release gate that evaluates an evidence document against 11 controls | Real SBOM generation, Cosign signing and verification in CI | 3 |
-| 4 | [AI ingestion and agentic security lab](projects/04-agentic-ai-security/README.md) | Deterministic ingestion guardrail with provenance, redaction, injection detection | Tool-using agent eval harness | 5 |
-| 5 | [Detection as code](projects/05-detection-as-code/README.md) | Five CloudTrail detections over synthetic events, triage runbook | Attack simulation in an isolated account | 6 |
+| 2 | [Kubernetes security baseline](projects/02-kubernetes-security-baseline/README.md) | Offline workload checker (13 controls), default-deny NetworkPolicy, browser demo | Native admission policy and kind cluster tests | 6 |
+| 3 | [Software supply-chain security](projects/03-software-supply-chain/README.md) | Release gate that evaluates an evidence document against 11 controls | Real SBOM generation, Cosign signing and verification in CI | 6 |
+| 4 | [AI ingestion and agentic security lab](projects/04-agentic-ai-security/README.md) | Deterministic ingestion guardrail with provenance, redaction, injection detection | Tool-using agent eval harness | 8 |
+| 5 | [Detection as code](projects/05-detection-as-code/README.md) | Five CloudTrail detections over synthetic events, triage runbook | Attack simulation in an isolated account | 9 |
 
 All five are **in progress**. None is yet complete by the evidence standard below. Each project README separates what is implemented from what is planned.
 

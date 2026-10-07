@@ -25,7 +25,7 @@ class KubernetesBaselineTests(unittest.TestCase):
         control_ids = {finding.split()[0] for finding in findings}
         self.assertEqual(
             control_ids,
-            {"K8S-001", "K8S-002", "K8S-003", "K8S-005", "K8S-006", "K8S-007", "K8S-008", "K8S-009"},
+            {"K8S-001", "K8S-002", "K8S-003", "K8S-005", "K8S-006", "K8S-007", "K8S-008", "K8S-009", "K8S-014"},
         )
 
     def test_default_deny_covers_both_directions(self):
@@ -33,6 +33,28 @@ class KubernetesBaselineTests(unittest.TestCase):
         self.assertIn("- Ingress", text)
         self.assertIn("- Egress", text)
         self.assertIn("podSelector: {}", text)
+
+    def test_registry_port_does_not_count_as_image_tag(self):
+        workload = self.load("secure-deployment.json")
+        workload["spec"]["template"]["spec"]["containers"][0]["image"] = "registry.local:5000/app"
+        findings = MODULE.violations(workload)
+        self.assertTrue(any(finding.startswith("K8S-005") for finding in findings))
+
+    def test_host_access_and_privileged_containers_are_rejected(self):
+        workload = self.load("secure-deployment.json")
+        pod = workload["spec"]["template"]["spec"]
+        pod.update({"hostNetwork": True, "hostPID": True, "hostIPC": True})
+        pod["volumes"] = [{"name": "host", "hostPath": {"path": "/etc"}}]
+        pod["containers"][0]["securityContext"]["privileged"] = True
+        control_ids = {finding.split()[0] for finding in MODULE.violations(workload)}
+        self.assertTrue({"K8S-010", "K8S-011", "K8S-012", "K8S-013", "K8S-014"}.issubset(control_ids))
+
+    def test_init_containers_receive_the_same_checks(self):
+        workload = self.load("secure-deployment.json")
+        pod = workload["spec"]["template"]["spec"]
+        pod["initContainers"] = [{"name": "setup", "image": "busybox:latest"}]
+        findings = MODULE.violations(workload)
+        self.assertTrue(any("setup" in finding for finding in findings))
 
 
 if __name__ == "__main__":
