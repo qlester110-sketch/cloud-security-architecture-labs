@@ -23,7 +23,7 @@ cd cloud-security-architecture-labs
 python3 -m unittest discover -s tests -v
 ```
 
-Expected result: `Ran 34 tests` followed by `OK`. The same command runs in GitHub Actions on every push and pull request.
+Expected result: `Ran 41 tests` followed by `OK`. The same command runs in GitHub Actions on every push and pull request.
 
 Each project README has its own run commands, sample output, and known limitations.
 
