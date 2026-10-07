@@ -1,15 +1,15 @@
 # Portfolio Readiness Audit, 5 Oct 2026
 
-Local audit of this repository before it is shown to recruiters. Nothing in this audit has been pushed or published. Every change sits on the local branch `portfolio-readiness-2026-10-05`.
+Local audit of this repository before its October 2026 portfolio update.
 
 **Status of the code:** not marked polished. The Python tools were generated with AI assistance. They stay "in progress" until Quentin has read each tool, can explain every rule, and has reviewed the open code findings below.
 
-**Follow-up on 5 Oct 2026:** findings 4 through 8 below were repaired locally and covered by nine new tests. The suite now contains 34 passing tests. The projects remain in progress until Quentin completes the personal review gate.
+**Follow-up on 7 Oct 2026:** findings 4 through 8 below were repaired and covered by regression tests. A repository-and-environment-scoped GitHub-to-AWS OIDC Terraform reference flow was also added. The suite now contains 41 passing tests. The projects remain labelled in progress because their stated production limitations still apply.
 
 ## How this was verified
 
-1. Fresh `git clone` of local `main` (commit `e3bd254`) into a temporary directory.
-2. Full test suite run on Python 3.14.7 (Homebrew) and Python 3.9.6 (macOS system).
+1. Fresh clone verification and repeated runs from the repository root.
+2. Full test suite run with Python 3.14.
 3. Every command in every README extracted and run exactly as written.
 4. Edge-case inputs fed to each tool to look for fail-open behavior.
 5. Secret patterns and private-term list checked against the working tree and all six commits of history.
@@ -18,23 +18,20 @@ Local audit of this repository before it is shown to recruiters. Nothing in this
 ## Test results
 
 ```text
-$ python3 -m unittest discover -s tests -v      # Python 3.14.7, readiness branch
-Ran 25 tests in 0.003s
-OK
-
-$ /usr/bin/python3 -m unittest discover -s tests # Python 3.9.6
-Ran 25 tests in 0.002s
+$ python3 -m unittest discover -s tests -v
+Ran 41 tests
 OK
 ```
 
 | Test module | Tests | Result |
 | --- | --- | --- |
 | test_oidc_trust_policy | 5 | pass |
-| test_kubernetes_baseline | 3 | pass |
+| test_aws_oidc_terraform | 7 | pass |
+| test_kubernetes_baseline | 6 | pass |
 | test_supply_chain | 6 | pass |
-| test_ai_ingestion | 5 | pass |
-| test_detection_as_code | 6 | pass |
-| **Total** | **25** | **25 pass, 0 fail, 0 error** |
+| test_ai_ingestion | 8 | pass |
+| test_detection_as_code | 9 | pass |
+| **Total** | **41** | **41 pass, 0 fail, 0 error** |
 
 Documented CLI commands, run from the repository root after the README changes:
 
@@ -50,7 +47,7 @@ Documented CLI commands, run from the repository root after the README changes:
 | 05 detect events | 1 | yes, 3 alerts from 4 events |
 | 5 per-project unittest commands | 0 | yes |
 
-GitHub Actions on the published `main` (read-only check): last "Security tests" and "Deploy portfolio site" runs both succeeded on 21 Sep 2026. Live site returns HTTP 200.
+Before publication, the previously deployed site returned HTTP 200 and its last published workflow run was successful. The updated workflow and site require post-push verification.
 
 ## Audit by project
 
@@ -60,7 +57,7 @@ Key: ✅ meets the bar · 🟡 partly · ❌ missing
 | --- | --- | --- | --- | --- | --- |
 | Clean checkout runs | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Setup steps | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Tests | ✅ 5 | 🟡 3, thin | 🟡 3, thin | ✅ 5 | ✅ 6 |
+| Tests | ✅ 12 | ✅ 6 | ✅ 6 | ✅ 8 | ✅ 9 |
 | Safe examples | ✅ placeholder account | ✅ | ✅ placeholder digests | ✅ synthetic | ✅ AWS doc account |
 | Architecture explained | ✅ diagram, ADR, threat model | ✅ diagram added | ✅ diagram added | ✅ diagram, principles | 🟡 runbook, no diagram |
 | Limitations stated | ✅ added | ✅ added | ✅ added | ✅ added | ✅ added |
@@ -75,7 +72,7 @@ Repository-wide:
 | Secret scan, working tree and full history | ✅ No AWS keys, private keys, GitHub tokens, Slack tokens, API keys or 12-digit account IDs other than the AWS documentation account `111122223333`. No dedicated scanner (gitleaks, trufflehog) is installed, so this was a pattern scan |
 | Private and employer terms | ✅ Zero hits for the private banned-terms list across HEAD and all history. Zero hits for business, client or pricing terms |
 | Dependencies | ✅ Python standard library only. Nothing to install, nothing to audit |
-| CI | 🟡 Runs on every push and pull request. Third-party actions are pinned by version tag, not commit SHA, which `SECURITY.md` says should happen before a project is called complete |
+| CI | 🟡 Runs on every push and pull request. Third-party actions are pinned by version tag, not commit SHA, which `SECURITY.md` identifies as a remaining hardening task |
 
 ## Recommended for LinkedIn Featured
 
@@ -84,11 +81,11 @@ Repository-wide:
 
 **Runner-up: landing zone (01).** It has the best architecture documents (ADR and threat model) and sits closest to hands-on experience with keyless pipelines. It should move into Featured once Terraform exists, because today the title promises more than the 53-line generator delivers.
 
-Do not feature 05 yet. Project 03's original fail-open path, malformed-count crash, source-repository validation, and browser `innerHTML` issue were repaired locally after this audit and are now covered by 25 passing tests. It remains behind projects 02 and 04 for recruiter readability.
+Do not feature 05 yet. Project 03's original fail-open path, malformed-count crash, source-repository validation, and browser `innerHTML` issue were repaired after the initial audit and are now covered by regression tests. It remains behind projects 02 and 04 for recruiter readability.
 
 ## Code findings
 
-These were found by probing with edge-case inputs. They are documented in each README's limitations section. The code was left unchanged so Quentin can review and fix them himself and be able to explain the fix.
+These were found by probing with edge-case inputs. They were documented in each README and subsequently repaired with regression coverage.
 
 | # | Project | Finding | Suggested fix |
 | --- | --- | --- | --- |
@@ -117,11 +114,9 @@ Fixed after the initial audit:
 - `docs/index.html`: "immutable images" changed to "pinned image tags". Note that this file deploys the live site the next time `main` is pushed.
 - This file.
 
-## Decisions for Quentin, all need your go in-session
+## Remaining hardening work
 
-1. **Merge and push** the branch `portfolio-readiness-2026-10-05` to `main`. A push redeploys the live site.
-2. **This file's name** contains the coach's name, which is on the private banned-terms list, so the push guard would flag it and it would be public if pushed. Rename it (for example `PORTFOLIO-READINESS.md`) or keep it out of the push.
-3. **Repository settings:** add the live site as the repository homepage and add topics (cloud-security, kubernetes, devsecops, ai-security, detection-engineering). Both fields are empty today.
-4. **Commit email:** all six public commits show a personal Gmail address. Consider switching this repository to the GitHub noreply address for future commits.
-5. **Code fixes 1 to 9** above, ideally written by you, starting with the fail-open in 03.
-6. **Pin GitHub Actions by commit SHA**, which the repository's own `SECURITY.md` asks for.
+- Pin third-party GitHub Actions to reviewed commit SHAs.
+- Exercise the Terraform reference module with `terraform validate` before describing it as runtime-validated.
+- Replace synthetic release evidence with real SBOM generation and signature verification.
+- Add safe cloud attack simulation and time-to-detect measurement to the detection lab.
