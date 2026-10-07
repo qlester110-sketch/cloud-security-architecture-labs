@@ -1,6 +1,6 @@
 # Secure Multi Cloud Landing Zone
 
-**Status:** In progress. The architecture decision record, threat model, control contract, and a tested AWS trust-policy generator for GitHub Actions OIDC are done. No Terraform exists yet, and Azure and GCP are design-only so far.
+**Status:** In progress. The architecture decision record, threat model, control contract, tested AWS trust-policy generator, and local Terraform reference module for GitHub Actions OIDC are done. The module has not been applied to an AWS account, and Azure and GCP are design-only so far.
 
 ## Goal
 
@@ -65,14 +65,23 @@ The machine-readable baseline lives in [`controls/baseline.yaml`](controls/basel
 - [Baseline control contract](controls/baseline.yaml)
 - [OIDC trust configuration](config/oidc-trust.json)
 - [AWS trust-policy generator](tools/generate_aws_trust_policy.py)
+- [Terraform AWS OIDC module](terraform/aws-github-oidc/)
+- [Inactive GitHub Actions reference flow](examples/github-actions-aws-oidc.yml)
 
 Run the generator and tests without cloud credentials, from the repository root, with Python 3.9 or newer:
 
 ```bash
 python3 -m unittest tests.test_oidc_trust_policy -v
+python3 -m unittest tests.test_aws_oidc_terraform -v
 python3 projects/01-multicloud-landing-zone/tools/generate_aws_trust_policy.py \
   projects/01-multicloud-landing-zone/config/oidc-trust.json
 ```
+
+## What the Terraform reference adds
+
+The module creates the GitHub OIDC provider and an AWS IAM role whose trust policy accepts only the exact repository and protected GitHub environment supplied as inputs. Wildcards are rejected, the token audience is pinned to AWS STS, and temporary sessions are capped at one hour.
+
+The workflow example is deliberately stored outside `.github/workflows`, so it cannot execute. In a real deployment, a repository administrator would first configure the `production` GitHub environment with required reviewers. An approved job could then exchange its short-lived GitHub identity for temporary AWS role credentials. This repository does not contain or require static AWS access keys.
 
 ## Sample output
 
@@ -103,8 +112,8 @@ The policy only trusts a token whose subject is this exact repository and the `p
 
 ## Known limitations
 
-- Only the AWS trust policy is generated. Azure federated credentials and GCP workload identity federation are described in the architecture but not implemented.
-- The tool prints a policy. It does not create the OIDC provider or the IAM role, and no permissions policy is attached.
-- Input values are not validated for format. The use of `StringEquals` means a `*` is matched literally rather than as a wildcard, but the tool does not reject it.
-- `role_name` in the config file is not used yet.
+- Azure federated credentials and GCP workload identity federation are described in the architecture but not implemented.
+- The Python tool prints a policy. The Terraform module defines an OIDC provider and role, but it has not been applied or validated against a real AWS account, and no permissions policy is attached.
+- Terraform is not installed in the local review environment, so the module is covered by static contract tests rather than `terraform validate` in this revision.
+- The Python generator does not yet validate input formats or use `role_name`; the Terraform module rejects wildcard scope and uses its role-name input.
 - The controls in `controls/baseline.yaml` are a specification. Only IAM-001 and IAM-002 have tests today.

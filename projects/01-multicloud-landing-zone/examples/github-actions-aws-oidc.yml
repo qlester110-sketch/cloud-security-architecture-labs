@@ -1,0 +1,26 @@
+# Reference only. This file is intentionally outside .github/workflows so it cannot run.
+name: Approved AWS OIDC example
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  verify-identity:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Exchange GitHub identity for temporary AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/portfolio-production-deployer
+          aws-region: us-east-1
+
+      - name: Show the temporary caller identity
+        run: aws sts get-caller-identity
