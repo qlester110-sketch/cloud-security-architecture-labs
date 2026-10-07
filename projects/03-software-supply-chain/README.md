@@ -1,6 +1,6 @@
 # Software Supply Chain Security
 
-**Status:** In progress. A release gate that evaluates a release-evidence document against eleven controls is working, with secure and insecure fixtures and three tests. It does not yet generate an SBOM, sign anything, or verify a real signature.
+**Status:** In progress. A release gate that evaluates a release-evidence document against eleven controls is working, with secure and insecure fixtures and six tests. It does not yet generate an SBOM, sign anything, or verify a real signature.
 
 ## Goal
 
@@ -74,7 +74,6 @@ The secure fixture prints `PASS: release evidence satisfies the supply-chain pol
 ## Known limitations
 
 - The gate trusts the evidence document. `signature.verified: true` is accepted as stated. Nothing calls Cosign or checks a real SBOM file.
-- If the `vulnerabilities` section is missing, the vulnerability controls pass. A missing scan result should block the release. This is the next fix.
 - Vulnerability evidence is required. Missing, negative, boolean, or non-integer critical and high counts fail closed under SC-010 and SC-011.
 - SC-008 currently permits only this portfolio repository. A production implementation should load its approved source repositories from reviewed policy configuration.
 - SC-003 checks a format label, not the SBOM content.
