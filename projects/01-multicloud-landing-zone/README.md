@@ -1,6 +1,6 @@
 # Secure Multi Cloud Landing Zone
 
-**Status:** In progress — architecture, control specification, and tested AWS OIDC trust-policy generator complete; Terraform modules are next.
+**Status:** In progress. The architecture decision record, threat model, control contract, and a tested AWS trust-policy generator for GitHub Actions OIDC are done. No Terraform exists yet, and Azure and GCP are design-only so far.
 
 ## Goal
 
@@ -66,10 +66,45 @@ The machine-readable baseline lives in [`controls/baseline.yaml`](controls/basel
 - [OIDC trust configuration](config/oidc-trust.json)
 - [AWS trust-policy generator](tools/generate_aws_trust_policy.py)
 
-Run the generator and tests without cloud credentials:
+Run the generator and tests without cloud credentials, from the repository root, with Python 3.9 or newer:
 
 ```bash
-python projects/01-multicloud-landing-zone/tools/generate_aws_trust_policy.py \
+python3 -m unittest tests.test_oidc_trust_policy -v
+python3 projects/01-multicloud-landing-zone/tools/generate_aws_trust_policy.py \
   projects/01-multicloud-landing-zone/config/oidc-trust.json
-python -m unittest tests.test_oidc_trust_policy -v
 ```
+
+## Sample output
+
+Captured from a clean clone on 5 Oct 2026. `<ACCOUNT_ID>` is a deliberate placeholder, so the output is safe to share.
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::<ACCOUNT_ID>:oidc-provider/token.actions.githubusercontent.com"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+          "token.actions.githubusercontent.com:sub": "repo:qlester110-sketch/cloud-security-architecture-labs:environment:production"
+        }
+      }
+    }
+  ]
+}
+```
+
+The policy only trusts a token whose subject is this exact repository and the `production` environment, so a fork cannot assume the role. Keeping other branches and pull requests out also depends on the GitHub environment being restricted to protected branches with required reviewers, which is configured in GitHub rather than in this policy.
+
+## Known limitations
+
+- Only the AWS trust policy is generated. Azure federated credentials and GCP workload identity federation are described in the architecture but not implemented.
+- The tool prints a policy. It does not create the OIDC provider or the IAM role, and no permissions policy is attached.
+- Input values are not validated for format. The use of `StringEquals` means a `*` is matched literally rather than as a wildcard, but the tool does not reject it.
+- `role_name` in the config file is not used yet.
+- The controls in `controls/baseline.yaml` are a specification. Only IAM-001 and IAM-002 have tests today.

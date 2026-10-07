@@ -27,6 +27,23 @@ class SupplyChainTests(unittest.TestCase):
         release["vulnerabilities"]["high"] = 1
         self.assertIn("SC-011 high vulnerabilities block release", MODULE.findings(release))
 
+    def test_missing_vulnerability_evidence_fails_closed(self):
+        release = self.load("secure-release.json")
+        del release["vulnerabilities"]
+        controls = {item.split()[0] for item in MODULE.findings(release)}
+        self.assertEqual(controls, {"SC-010", "SC-011"})
+
+    def test_malformed_vulnerability_counts_fail_closed(self):
+        release = self.load("secure-release.json")
+        release["vulnerabilities"] = {"critical": "0", "high": "1"}
+        controls = {item.split()[0] for item in MODULE.findings(release)}
+        self.assertEqual(controls, {"SC-010", "SC-011"})
+
+    def test_unapproved_github_repository_is_rejected(self):
+        release = self.load("secure-release.json")
+        release["provenance"]["source_uri"] = "https://github.com/example/untrusted"
+        self.assertIn("SC-008 provenance requires an approved source URI", MODULE.findings(release))
+
 
 if __name__ == "__main__":
     unittest.main()

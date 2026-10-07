@@ -26,7 +26,18 @@ document.querySelector("#analyze").onclick = () => {
     if(!sc.capabilities?.drop?.includes("ALL")) findings.push(`K8S-008 ${n}: drop all Linux capabilities`);
     if(!r.requests||!r.limits) findings.push(`K8S-009 ${n}: declare resource requests and limits`);
   });
-  if(!findings.length){results.className="results pass";results.innerHTML="<strong>PASS</strong> — workload satisfies the baseline.";}
-  else{results.className="results fail";results.innerHTML=`<strong>FAIL — ${findings.length} finding${findings.length===1?"":"s"}</strong><ul>${findings.map(x=>`<li>${x}</li>`).join("")}</ul>`;}
+  results.replaceChildren();
+  const summary=document.createElement("strong");
+  if(!findings.length){
+    results.className="results pass";
+    summary.textContent="PASS";
+    results.append(summary, " — workload satisfies the baseline.");
+  } else {
+    results.className="results fail";
+    summary.textContent=`FAIL — ${findings.length} finding${findings.length===1?"":"s"}`;
+    const list=document.createElement("ul");
+    findings.forEach(finding=>{const item=document.createElement("li");item.textContent=finding;list.append(item);});
+    results.append(summary,list);
+  }
 };
 load(secure);

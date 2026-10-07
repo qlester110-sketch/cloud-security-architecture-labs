@@ -10,6 +10,9 @@ from pathlib import Path
 
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
 COMMIT_SHA = re.compile(r"^[a-f0-9]{40}$")
+APPROVED_SOURCE_URIS = {
+    "https://github.com/qlester110-sketch/cloud-security-architecture-labs",
+}
 
 
 def findings(release: dict) -> list[str]:
@@ -17,7 +20,7 @@ def findings(release: dict) -> list[str]:
     artifact = release.get("artifact", {})
     sbom = release.get("sbom", {})
     provenance = release.get("provenance", {})
-    vulnerabilities = release.get("vulnerabilities", {})
+    vulnerabilities = release.get("vulnerabilities")
 
     if not SHA256.fullmatch(artifact.get("sha256", "")):
         issues.append("SC-001 artifact requires an immutable SHA-256 digest")
@@ -35,13 +38,15 @@ def findings(release: dict) -> list[str]:
             issues.append("SC-006 every package requires a SHA-256 checksum")
     if not COMMIT_SHA.fullmatch(provenance.get("commit_sha", "")):
         issues.append("SC-007 provenance requires a full source commit SHA")
-    if not provenance.get("source_uri", "").startswith("https://github.com/"):
+    if provenance.get("source_uri") not in APPROVED_SOURCE_URIS:
         issues.append("SC-008 provenance requires an approved source URI")
     if provenance.get("identity_type") != "oidc":
         issues.append("SC-009 build identity must use OIDC")
-    if vulnerabilities.get("critical", 0) > 0:
+    critical = vulnerabilities.get("critical") if isinstance(vulnerabilities, dict) else None
+    high = vulnerabilities.get("high") if isinstance(vulnerabilities, dict) else None
+    if type(critical) is not int or critical < 0 or critical > 0:
         issues.append("SC-010 critical vulnerabilities block release")
-    if vulnerabilities.get("high", 0) > 0:
+    if type(high) is not int or high < 0 or high > 0:
         issues.append("SC-011 high vulnerabilities block release")
     return sorted(set(issues))
 
