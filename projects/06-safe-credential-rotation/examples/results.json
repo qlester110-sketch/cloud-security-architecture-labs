@@ -1,0 +1,81 @@
+[
+  {
+    "stage": "idle",
+    "current_version": 2,
+    "orders_processed": 300,
+    "valid_credentials": 1,
+    "audit": [
+      {
+        "event": "prepared",
+        "version": 2
+      },
+      {
+        "event": "validated",
+        "version": 2
+      },
+      {
+        "event": "promoted",
+        "version": 2
+      },
+      {
+        "event": "retired",
+        "version": 1
+      }
+    ],
+    "scenario": "success",
+    "operations_attempted": 300,
+    "successful_operations": 300,
+    "authentication_failures": 0,
+    "rotation_outcome": "retired"
+  },
+  {
+    "stage": "idle",
+    "current_version": 1,
+    "orders_processed": 300,
+    "valid_credentials": 1,
+    "audit": [
+      {
+        "event": "prepared",
+        "version": 2
+      },
+      {
+        "event": "validation_failed",
+        "version": 2
+      }
+    ],
+    "scenario": "failed-validation",
+    "operations_attempted": 300,
+    "successful_operations": 300,
+    "authentication_failures": 0,
+    "rotation_outcome": "validation_failed"
+  },
+  {
+    "stage": "idle",
+    "current_version": 1,
+    "orders_processed": 300,
+    "valid_credentials": 1,
+    "audit": [
+      {
+        "event": "prepared",
+        "version": 2
+      },
+      {
+        "event": "validated",
+        "version": 2
+      },
+      {
+        "event": "promoted",
+        "version": 2
+      },
+      {
+        "event": "rolled_back",
+        "version": 2
+      }
+    ],
+    "scenario": "stale-worker",
+    "operations_attempted": 300,
+    "successful_operations": 300,
+    "authentication_failures": 0,
+    "rotation_outcome": "rolled_back"
+  }
+]
