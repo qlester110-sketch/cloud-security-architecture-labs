@@ -23,7 +23,7 @@ cd cloud-security-architecture-labs
 python3 -m unittest discover -s tests -v
 ```
 
-Expected result: `Ran 57 tests` followed by `OK`. The same command runs in GitHub Actions on every push and pull request.
+Expected result: `Ran 65 tests` followed by `OK`. The same command runs in GitHub Actions on every push and pull request.
 
 Each project README has its own run commands, sample output, and known limitations.
 
@@ -36,7 +36,7 @@ Each project README has its own run commands, sample output, and known limitatio
 | 3 | [Software supply-chain security](projects/03-software-supply-chain/README.md) | Release gate that evaluates an evidence document against 11 controls | Real SBOM generation, Cosign signing and verification in CI | 6 |
 | 4 | [AI ingestion and agentic security lab](projects/04-agentic-ai-security/README.md) | Deterministic ingestion guardrail with provenance, redaction, injection detection | Tool-using agent eval harness | 8 |
 | 5 | [Detection as code](projects/05-detection-as-code/README.md) | Five CloudTrail detections over synthetic events, triage runbook | Attack simulation in an isolated account | 9 |
-| 6 | [Safe credential rotation](projects/06-safe-credential-rotation/README.md) | Durable local rotation, synthetic orders, health gates, overlap, acknowledgement and rollback | Real provider adapter and sandbox validation | 16 |
+| 6 | [Safe credential rotation](projects/06-safe-credential-rotation/README.md) | Durable local rotation, synthetic orders, health gates, overlap, acknowledgement, rollback and expiry planning | Real provider adapter and sandbox validation | 24 |
 
 The first five are **in progress**. The sixth completes a local simulation milestone, with real provider adapters still planned. None is yet complete by the evidence standard below. Each project README separates what is implemented from what is planned.
 

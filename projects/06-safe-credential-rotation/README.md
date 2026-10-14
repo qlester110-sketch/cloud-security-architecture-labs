@@ -43,7 +43,7 @@ Worker enrollment freezes during rotation. Versions are never reused after failu
 
 [Recorded results](examples/results.json) contain three scenarios, each attempting 300 synthetic operations across three workers. All three completed 300 operations with zero authentication failures. Success retired the previous key; failed validation preserved the original key; a stale consumer caused rollback.
 
-These are sequential operations on a logical clock, not production throughput measurements or proof of cloud service availability. Sixteen tests cover overlap, old-key rejection, stale acknowledgements, premature promotion, restart recovery, competing preparation, rollback, idempotency and secret-free output. The full repository suite has 57 tests.
+These are sequential operations on a logical clock, not production throughput measurements or proof of cloud service availability. Sixteen tests cover overlap, old-key rejection, stale acknowledgements, premature promotion, restart recovery, competing preparation, rollback, idempotency and secret-free output. The full repository suite has 65 tests.
 
 ## Identity and rotation
 
@@ -72,3 +72,20 @@ Choose one generic commerce integration, such as inventory sync or order import.
 ## Cleanup and license
 
 The CLI and tests remove disposable state on exit. If using the class manually, close the connection and delete its lab database afterward. No infrastructure is provisioned. Apache 2.0, inherited from the repository.
+
+
+## Expiration and renewal planning
+
+Run the metadata-only inventory planner:
+
+    python3 projects/06-safe-credential-rotation/tools/expiry.py projects/06-safe-credential-rotation/examples/credential-inventory.json --now 2026-10-14T00:00:00Z
+
+The synthetic inventory stores only an integration identifier, owner, secret reference, provider expiration, policy rotation deadline and provider capability status. Eight tests verify timezone handling, warning boundaries, earlier deadlines, unknown dates and rejection of raw secret fields.
+
+The report warns at 30 days, 7 days, 1 day and overdue. A provider expiration is distinct from an operator-chosen rotate-by date. Setting a local date does not change a remote key's lifetime or revoke it. Unknown dates and unknown overlap support are explicit, not assumed healthy or automatic. The planner neither reads secret values nor sends notifications.
+
+For a real deployment, run the planner daily and notify the owner when an integration enters a new warning level. Keep notification deduplication state keyed by integration, credential version, deadline and warning level. An API-renewable integration still needs a tested adapter before automation. A manual-only provider gets a reminder to issue a replacement; no automated browser credential entry is part of this project.
+
+Keep the workflow's secret reference stable. Retrieve the active secret at the start of a job, or through a bounded cache that refreshes before the overlap window ends. Let in-flight jobs finish on the previous generation where the provider allows it. Do not blindly retry a paid media-generation request after an ambiguous response, because that can duplicate spend; preserve request identifiers and reconcile status first.
+
+A real secret store must encrypt values, enforce per-workload read access and audit retrieval. This lab's disposable plaintext store is only a local simulation. Moving production credentials into a vault, implementing provider adapters and enabling live reminders require the actual runtime and provider contract.
